@@ -1,0 +1,59 @@
+#include <LiquidCrystal.h> 
+LiquidCrystal lcd(12,11,8, 7, 6, 5);
+int X;
+int Y;
+float zaman = 0;
+float frekans = 0;
+float su = 0;
+float toplam = 0;
+float z = 0;
+const int input = 2;
+void setup()
+{
+Serial.begin(9600);
+lcd.begin(16, 2);
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("su Flow Meter");
+lcd.setCursor(0,1);
+lcd.print("****************");
+delay(2000);
+pinMode(input,INPUT);
+}
+void loop()
+{
+X = pulseIn(input, HIGH);
+Y = pulseIn(input, LOW);
+zaman = X + Y;
+frekans = 1000000/zaman;
+su = frekans/7.5;
+z = su/60;
+if(frekans >= 0)
+{
+if(isinf(frekans))
+{
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("VOL. :0.00");
+lcd.setCursor(0,1);
+lcd.print("toplam:");
+lcd.print( toplam);
+lcd.print(" L");
+}
+else
+{
+toplam = toplam + z;
+Serial.println(frekans);
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("VOL.: ");
+lcd.print(su);
+lcd.print(" L/M");
+lcd.setCursor(0,1);
+lcd.print("toplam:");
+lcd.print(toplam);
+lcd.print(" L");
+}
+}
+delay(1000);
+}
